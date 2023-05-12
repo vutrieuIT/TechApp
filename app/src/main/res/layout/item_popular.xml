@@ -6,7 +6,7 @@
     android:layout_height="105dp"
     android:layout_margin="10dp"
     android:elevation="3dp"
-    android:background="@drawable/cart_background"
+    android:background="@drawable/card_background"
     >
 
     <ImageView

@@ -1,3 +1,8 @@
 <resources>
     <string name="app_name">TechApp</string>
+    <string name="username_empty">vui lòng nhập tên đăng nhập</string>
+    <string name="password_empty">vui lòng nhập mật khẩu</string>
+    <string name="name_empty">vui lòng nhập họ tên</string>
+    <string name="login_fail">mật khẩu hoặc mật khẩu sai</string>
+    <string name="internet_error">lỗi kết nối</string>
 </resources>
