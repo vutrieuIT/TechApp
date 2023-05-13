@@ -2,7 +2,7 @@
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/categoryLayout"
-    android:layout_width="75dp"
+    android:layout_width="100dp"
     android:layout_height="wrap_content"
     android:layout_margin="8dp"
     android:background="#3A348C">
@@ -29,6 +29,7 @@
         android:text="Pizza"
         android:textSize="16sp"
         android:textStyle="bold"
+        android:layout_marginTop="5dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="@+id/categoryImage"
         app:layout_constraintStart_toStartOf="@+id/categoryImage"

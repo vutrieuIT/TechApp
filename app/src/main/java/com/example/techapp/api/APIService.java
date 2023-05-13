@@ -1,11 +1,15 @@
 package com.example.techapp.api;
 
+import com.example.techapp.model.Category;
 import com.example.techapp.model.ResponseModel;
 import com.example.techapp.model.User;
+
+import java.util.List;
 
 import retrofit2.Call;
 import retrofit2.http.Field;
 import retrofit2.http.FormUrlEncoded;
+import retrofit2.http.GET;
 import retrofit2.http.POST;
 
 public interface APIService {
@@ -27,4 +31,8 @@ public interface APIService {
             @Field("email") String email,
             @Field("sdt") String sdt
     );
+
+    @GET("/category")
+    Call<ResponseModel<List<Category>>> getCategories();
+
 }
