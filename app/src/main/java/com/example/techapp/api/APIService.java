@@ -1,6 +1,7 @@
 package com.example.techapp.api;
 
 import com.example.techapp.model.Category;
+import com.example.techapp.model.Product;
 import com.example.techapp.model.ResponseModel;
 import com.example.techapp.model.User;
 
@@ -34,5 +35,8 @@ public interface APIService {
 
     @GET("/category")
     Call<ResponseModel<List<Category>>> getCategories();
+
+    @GET("/product")
+    Call<List<Product>> getProduct();
 
 }

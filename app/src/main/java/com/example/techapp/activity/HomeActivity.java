@@ -10,9 +10,11 @@ import android.util.Log;
 import com.example.techapp.Constant;
 import com.example.techapp.R;
 import com.example.techapp.adapter.CategoryAdapter;
+import com.example.techapp.adapter.ProductAdapter;
 import com.example.techapp.api.APIBuilder;
 import com.example.techapp.api.APIService;
 import com.example.techapp.model.Category;
+import com.example.techapp.model.Product;
 import com.example.techapp.model.ResponseModel;
 
 import java.util.ArrayList;
@@ -27,8 +29,11 @@ public class HomeActivity extends AppCompatActivity {
     RecyclerView recyclerViewCategory, recyclerViewPopular;
     //
     CategoryAdapter categoryAdapter;
+
+    ProductAdapter productAdapter;
     APIService apiService;
     List<Category> categoryList = new ArrayList<>();
+    List<Product> productList = new ArrayList<>();
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -37,6 +42,7 @@ public class HomeActivity extends AppCompatActivity {
         anhXa();
 
         getCategory();
+        getProduct();
     }
 
     void anhXa(){
@@ -49,10 +55,19 @@ public class HomeActivity extends AppCompatActivity {
                 LinearLayoutManager.HORIZONTAL, false);
         recyclerViewCategory.setLayoutManager(layoutManager);
         recyclerViewCategory.setAdapter(categoryAdapter);
+        //
+        productAdapter = new ProductAdapter(this, productList);
+        recyclerViewPopular.setHasFixedSize(true);
+        RecyclerView.LayoutManager layoutManager1 = new LinearLayoutManager(getApplicationContext(),
+                RecyclerView.VERTICAL, false);
+        recyclerViewPopular.setLayoutManager(layoutManager1);
+        recyclerViewPopular.setAdapter(productAdapter);
+
+        // api
+        apiService = APIBuilder.createAPI(APIService.class, Constant.url);
     }
 
     void getCategory(){
-        apiService = APIBuilder.createAPI(APIService.class, Constant.url);
         apiService.getCategories().enqueue(
                 new Callback<ResponseModel<List<Category>>>() {
                     @Override
@@ -71,6 +86,28 @@ public class HomeActivity extends AppCompatActivity {
                     @Override
                     public void onFailure(Call<ResponseModel<List<Category>>> call, Throwable t) {
                         Log.e("home api", t.getMessage());
+                    }
+                }
+        );
+    }
+
+    void getProduct(){
+        apiService.getProduct().enqueue(
+                new Callback<List<Product>>() {
+                    @Override
+                    public void onResponse(Call<List<Product>> call, Response<List<Product>> response) {
+                        if (response.isSuccessful()){
+                            productList = response.body();
+                            productAdapter.setData(productList);
+                            productAdapter.notifyDataSetChanged();
+                        } else {
+                            Log.e("home product api", "response fail");
+                        }
+                    }
+
+                    @Override
+                    public void onFailure(Call<List<Product>> call, Throwable t) {
+                        Log.e("home product api", t.getMessage());
                     }
                 }
         );
