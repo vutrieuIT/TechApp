@@ -28,6 +28,7 @@
                 android:layout_height="wrap_content">
 
                 <TextView
+                    android:id="@+id/username"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="Xin chào"
@@ -45,7 +46,7 @@
                     android:paddingLeft="3dp"
                     android:paddingTop="3dp"
                     android:background="@drawable/border"
-                    android:id="@+id/imageView3"
+                    android:id="@+id/imageViewAvatar"
                     android:layout_width="60dp"
                     android:layout_height="60dp"
                     android:layout_marginEnd="20dp"
@@ -74,7 +75,7 @@
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintHorizontal_bias="0.0"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/imageView3" />
+                    app:layout_constraintTop_toBottomOf="@+id/imageViewAvatar" />
 
                 <ImageButton
                     android:id="@+id/cartBtn"
@@ -90,7 +91,7 @@
                     app:backgroundTint="#ff5e00"
                     app:maxImageSize="30dp"
                     app:tint="#ffffff"
-                    app:layout_constraintTop_toBottomOf="@+id/imageView3"
+                    app:layout_constraintTop_toBottomOf="@+id/imageViewAvatar"
                     app:layout_constraintStart_toEndOf="@+id/editTextSearch"/>
 
                 <TextView
@@ -111,8 +112,8 @@
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:clipToPadding="false"
-                    android:paddingLeft="22dp"
-                    android:paddingRight="30dp"
+                    android:paddingStart="22dp"
+                    android:paddingEnd="30dp"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@+id/textView10"

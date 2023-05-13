@@ -35,7 +35,11 @@ public class LoginActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
-
+        if (SharedPrefManager.getInstance(getApplicationContext()).isLogined()){
+            finish();
+            Intent intent = new Intent(getApplicationContext(), HomeActivity.class);
+            startActivity(intent);
+        }
         anhXa();
 
         switchRegister.setOnClickListener(new View.OnClickListener() {
@@ -85,9 +89,8 @@ public class LoginActivity extends AppCompatActivity {
                             User user = responseModel.getData();
                             if (user != null){
                                 SharedPrefManager.getInstance(getApplicationContext()).userLogin(user);
-
-                                // TODO:  chuyen sang giao dien chinh
-
+                                finish();
+                                startActivity(new Intent(LoginActivity.this, HomeActivity.class));
                             } else {
                                 Toast.makeText(LoginActivity.this,responseModel.getMessage(), Toast.LENGTH_LONG).show();
                             }

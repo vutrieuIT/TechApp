@@ -71,6 +71,14 @@ public class SharedPrefManager {
         SharedPreferences.Editor editor = sharedPreferences.edit();
         editor.clear();
         editor.apply();
-        context.startActivity(new Intent(context, LoginActivity.class));
+//        context.startActivity(new Intent(context, LoginActivity.class));
+    }
+
+    public boolean isLogined(){
+        SharedPreferences sharedPreferences =
+                context.getSharedPreferences(USER, Context.MODE_PRIVATE);
+        boolean isUsernameEmpty = sharedPreferences.getString(USERNAME, "").isEmpty();
+        boolean isPasswordEmpty = sharedPreferences.getString(PASSWORD, "").isEmpty();
+        return !(isUsernameEmpty || isPasswordEmpty);
     }
 }
