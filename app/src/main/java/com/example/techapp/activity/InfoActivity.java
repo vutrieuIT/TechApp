@@ -81,6 +81,15 @@ public class InfoActivity extends AppCompatActivity {
                 startActivity(intent);
             }
         });
+
+        infoAvatar.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                finish();
+                Intent intent = new Intent(InfoActivity.this, AvatarActivity.class);
+                startActivity(intent);
+            }
+        });
     }
 
 }

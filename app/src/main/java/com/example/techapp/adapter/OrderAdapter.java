@@ -61,7 +61,7 @@ public class OrderAdapter extends RecyclerView.Adapter<OrderAdapter.Holder>{
             @Override
             public void onClick(View v) {
                 new DeleteOrderAsync(dao).execute(order.getId());
-                list.remove(position);
+                list.remove(holder.getAdapterPosition());
                 notifyDataSetChanged();
             }
         });
