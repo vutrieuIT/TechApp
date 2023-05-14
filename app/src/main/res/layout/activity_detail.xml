@@ -19,8 +19,8 @@
                 android:layout_height="wrap_content">
                 <TextView
                     android:textAlignment="center"
-                    android:id="@+id/txtmealfood"
-                    android:text="Name food"
+                    android:id="@+id/tvProductName"
+                    android:text="Name product"
                     android:textSize="16sp"
                     android:padding="5sp"
                     android:textColor="#ff5e00"
@@ -28,8 +28,8 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"/>
                 <TextView
-                    android:id="@+id/txtprice"
-                    android:text="$"
+                    android:id="@+id/tvProductPrice"
+                    android:text="Vnd"
                     android:textSize="15sp"
                     android:textColor="#ff5e00"
                     android:textAlignment="center"
@@ -37,12 +37,12 @@
                     android:layout_height="wrap_content"/>
             </LinearLayout>
             <ImageView
+                android:id="@+id/imageDetail"
                 android:paddingTop="3dp"
                 android:paddingLeft="3dp"
                 android:paddingRight="3dp"
                 android:paddingBottom="3dp"
                 android:background="@drawable/orange_border2"
-                android:id="@+id/imageDetail"
                 app:layout_constraintTop_toBottomOf="@id/line1"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
@@ -58,29 +58,34 @@
                 app:layout_constraintTop_toBottomOf="@id/imageDetail"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content">
-                <ImageView
-                    android:id="@+id/minusMeal"
+                <ImageButton
+                    android:id="@+id/btnMinus"
                     android:src="@drawable/minus"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"/>
+
+                <NumberPicker
+                    android:id="@+id/npAmount"
+                    android:layout_width="70dp"
+                    android:layout_height="50dp"
+                    android:layout_gravity="center"
+                    />
                 <TextView
-                    android:id="@+id/txtAmount"
-                    android:text="1"
-                    android:layout_marginLeft="12sp"
-                    android:layout_marginRight="12sp"
-                    android:textStyle="bold"
-                    android:textSize="20sp"
-                    android:textAlignment="center"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"/>
-                <ImageView
-                    android:id="@+id/plusMeal"
+                    android:id="@+id/tvLimit"
+                    android:layout_width="70dp"
+                    android:layout_height="50dp"
+                    android:text="/limit"
+                    android:textSize="18sp"
+                    android:textColor="@color/black"
+                    android:gravity="center"/>
+                <ImageButton
+                    android:id="@+id/btnPlus"
                     android:src="@drawable/plus"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"/>
             </LinearLayout>
             <TextView
-                android:id="@+id/txtDesc"
+                android:id="@+id/tvProductDesc"
                 android:layout_margin="5sp"
                 android:padding="5sp"
                 android:text="Descript"
@@ -90,7 +95,7 @@
                 android:layout_height="wrap_content"/>
             <androidx.appcompat.widget.AppCompatButton
                 app:layout_constraintBottom_toBottomOf="parent"
-                android:id="@+id/btnadd"
+                android:id="@+id/btnAdd"
                 android:layout_marginBottom="5sp"
                 android:text="Add to Cart"
                 android:textColor="@color/white"
@@ -98,7 +103,7 @@
                 android:layout_marginEnd="25sp"
                 android:background="@drawable/orange_button"
                 android:layout_width="match_parent"
-                app:layout_constraintTop_toBottomOf="@id/txtDesc"
+                app:layout_constraintTop_toBottomOf="@id/tvProductDesc"
                 android:layout_marginTop="5sp"
                 android:layout_height="wrap_content"/>
 

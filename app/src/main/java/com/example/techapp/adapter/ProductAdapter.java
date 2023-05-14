@@ -1,6 +1,7 @@
 package com.example.techapp.adapter;
 
 import android.content.Context;
+import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -13,6 +14,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
 import com.example.techapp.R;
+import com.example.techapp.activity.DetailActivity;
 import com.example.techapp.model.Product;
 
 import java.util.List;
@@ -48,6 +50,15 @@ public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.Holder>{
         Glide.with(context)
                 .load(product.getImage())
                 .into(holder.productImage);
+
+        holder.itemView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(context, DetailActivity.class);
+                intent.putExtra("product_id", product.getId());
+                context.startActivity(intent);
+            }
+        });
     }
 
     @Override
@@ -63,12 +74,6 @@ public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.Holder>{
             productImage = itemView.findViewById(R.id.productImage);
             productName = itemView.findViewById(R.id.productName);
 
-            itemView.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    Toast.makeText(context, "click " + productName.getText().toString(), Toast.LENGTH_SHORT).show();
-                }
-            });
         }
     }
 

@@ -12,6 +12,7 @@ import retrofit2.http.Field;
 import retrofit2.http.FormUrlEncoded;
 import retrofit2.http.GET;
 import retrofit2.http.POST;
+import retrofit2.http.Path;
 
 public interface APIService {
 
@@ -38,5 +39,8 @@ public interface APIService {
 
     @GET("/product")
     Call<List<Product>> getProduct();
+
+    @GET("/product/{id}")
+    Call<Product> getDetail(@Path("id") int id);
 
 }
