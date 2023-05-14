@@ -11,10 +11,10 @@
         android:id="@+id/ivAvatar"
         android:layout_width="300dp"
         android:layout_height="300dp"
-        android:layout_marginTop="32dp"
+        android:layout_marginTop="16dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/btnBack"
         tools:srcCompat="@tools:sample/avatars" />
 
     <Button
@@ -40,7 +40,7 @@
         app:layout_constraintTop_toBottomOf="@+id/avatarBtnChoose" />
 
     <Button
-        android:id="@+id/button3"
+        android:id="@+id/btnBack"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"

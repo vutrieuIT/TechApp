@@ -6,7 +6,14 @@ import androidx.recyclerview.widget.RecyclerView;
 import androidx.room.Room;
 import androidx.room.RoomDatabase;
 
+import android.app.AlertDialog;
+import android.content.DialogInterface;
+import android.content.Intent;
 import android.os.Bundle;
+import android.view.View;
+import android.widget.Button;
+import android.widget.TextView;
+import android.widget.Toast;
 
 import com.example.techapp.AsyncTack.GetAllOrderAsync;
 import com.example.techapp.Constant;
@@ -25,6 +32,10 @@ public class CartActivity extends AppCompatActivity {
     OrderAdapter orderAdapter;
 
     List<Order> orders;
+
+    Button btnBack, btnPay;
+
+    TextView tvTotalMoney;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -39,10 +50,15 @@ public class CartActivity extends AppCompatActivity {
         } catch (InterruptedException e) {
             throw new RuntimeException(e);
         }
+
+        back();
     }
 
     void anhXa(){
         cartRVProduct = findViewById(R.id.cartRVProduct);
+        btnBack = findViewById(R.id.btnBack);
+        btnPay = findViewById(R.id.btnPay);
+        tvTotalMoney = findViewById(R.id.tvTotalMoney);
     }
     void configAdapter(){
         orderAdapter = new OrderAdapter(CartActivity.this, orders);
@@ -66,5 +82,44 @@ public class CartActivity extends AppCompatActivity {
         orders = new GetAllOrderAsync(dao).execute().get();
         orderAdapter.setData(orders);
         orderAdapter.notifyDataSetChanged();
+    }
+
+    void back(){
+        btnBack.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                finish();
+                Intent intent = new Intent(CartActivity.this, HomeActivity.class);
+                startActivity(intent);
+            }
+        });
+    }
+
+    void pay(){
+        btnPay.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                AlertDialog.Builder builder = new AlertDialog.Builder(CartActivity.this);
+                builder.setTitle("Thông báo");
+                builder.setMessage("bạn có muốn đặt hàng không \n giá trị đơn hàng là: "+ tvTotalMoney.getText().toString());
+                builder.setPositiveButton("Đồng ý", new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.dismiss();
+                        Toast.makeText(CartActivity.this, "gửi dơn hàng lên server, xóa orders", Toast.LENGTH_SHORT).show();
+                        // todo: gửi đơn hàng lên server
+                    }
+                });
+
+                builder.setNegativeButton("Hủy", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.dismiss();
+                    }
+                });
+
+                AlertDialog dialog = builder.create();
+                dialog.show();
+            }
+        });
     }
 }

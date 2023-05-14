@@ -4,9 +4,11 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.AppCompatButton;
 import androidx.room.Room;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.NumberPicker;
@@ -32,6 +34,7 @@ public class DetailActivity extends AppCompatActivity {
     TextView tvProductName, tvProductPrice, tvProductDesc;
     ImageView imageDetail;
     ImageButton btnMinus, btnPlus;
+    Button btnBack;
     NumberPicker npAmount;
     androidx.appcompat.widget.AppCompatButton btnAdd;
 
@@ -55,6 +58,7 @@ public class DetailActivity extends AppCompatActivity {
 
         btnMinus = findViewById(R.id.btnMinus);
         btnPlus = findViewById(R.id.btnPlus);
+        btnBack = findViewById(R.id.btnBack);
 
         npAmount = findViewById(R.id.npAmount);
         btnAdd = findViewById(R.id.btnAdd);
@@ -136,6 +140,15 @@ public class DetailActivity extends AppCompatActivity {
                 );
 
                 new InsertOrderAsyncTack(dao).execute(order);
+            }
+        });
+
+        btnBack.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                finish();
+                Intent intent = new Intent(DetailActivity.this, HomeActivity.class);
+                startActivity(intent);
             }
         });
     }

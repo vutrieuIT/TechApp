@@ -69,6 +69,7 @@ public class SharedPrefManager {
         SharedPreferences sharedPreferences = context.getSharedPreferences(USER, Context.MODE_PRIVATE);
         SharedPreferences.Editor editor = sharedPreferences.edit();
         editor.putString(AVATAR, avatar);
+        editor.apply();
     }
     public void logout(){
         SharedPreferences sharedPreferences =

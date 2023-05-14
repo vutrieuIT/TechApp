@@ -42,9 +42,8 @@ public class AvatarActivity extends AppCompatActivity {
 
     private static final int PICK_IMAGE_REQUEST = 1;
     private static final int PERMISSION_REQUEST_CODE = 1001;
-    Button avatarBtnChoose, avatarBtnUpload;
+    Button avatarBtnChoose, avatarBtnUpload, btnBack;
     ImageView ivAvatar;
-
     APIService apiService;
 
     Uri imageUri;
@@ -56,11 +55,13 @@ public class AvatarActivity extends AppCompatActivity {
         anhXa();
         chooseImage();
         uploadAvatar();
+        back();
     }
 
     void anhXa(){
         avatarBtnChoose = findViewById(R.id.avatarBtnChoose);
         avatarBtnUpload = findViewById(R.id.avatarBtnUpload);
+        btnBack = findViewById(R.id.btnBack);
         ivAvatar = findViewById(R.id.ivAvatar);
         apiService = APIBuilder.createAPI(APIService.class, Constant.url);
     }
@@ -121,6 +122,17 @@ public class AvatarActivity extends AppCompatActivity {
                     });
                 }
 
+            }
+        });
+    }
+
+    void back(){
+        btnBack.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                finish();
+                Intent intent = new Intent(AvatarActivity.this, InfoActivity.class);
+                startActivity(intent);
             }
         });
     }
