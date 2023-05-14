@@ -44,4 +44,7 @@ dependencies {
     annotationProcessor 'com.github.bumptech.glide:compiler:4.14.2'
     //bo goc tron cho ImageView
     implementation 'de.hdodenhof:circleimageview:3.1.0'
+    // ROOM
+    implementation "androidx.room:room-runtime:2.3.0"
+    annotationProcessor "androidx.room:room-compiler:2.3.0"
 }

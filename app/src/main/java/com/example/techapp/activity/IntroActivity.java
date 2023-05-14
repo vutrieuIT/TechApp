@@ -14,8 +14,6 @@ public class IntroActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_intro);
 
-
-
         Thread thread = new Thread(new Runnable() {
             @Override
             public void run() {

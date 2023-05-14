@@ -11,6 +11,7 @@ import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -34,7 +35,7 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-public class HomeActivity extends AppCompatActivity {
+public class HomeActivity extends AppCompatActivity implements CategoryAdapter.OnItemClickListener{
 
     RecyclerView recyclerViewCategory, recyclerViewPopular;
     //
@@ -44,6 +45,7 @@ public class HomeActivity extends AppCompatActivity {
     APIService apiService;
     List<Category> categoryList = new ArrayList<>();
     List<Product> productList = new ArrayList<>();
+    ImageButton cartBtn;
 
     TextView name;
     ImageView avatar;
@@ -68,7 +70,7 @@ public class HomeActivity extends AppCompatActivity {
         recyclerViewPopular = findViewById(R.id.recyclerViewPopular);
         name = findViewById(R.id.username);
         avatar = findViewById(R.id.imageViewAvatar);
-
+        cartBtn = findViewById(R.id.cartBtn);
 
         // api
         apiService = APIBuilder.createAPI(APIService.class, Constant.url);
@@ -77,6 +79,7 @@ public class HomeActivity extends AppCompatActivity {
     void configRecycleView(){
         // RV CATEGORY
         categoryAdapter = new CategoryAdapter(HomeActivity.this, categoryList);
+        categoryAdapter.setOnItemClickListener(this);
         recyclerViewCategory.setHasFixedSize(true);
         RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(getApplicationContext(),
                 LinearLayoutManager.HORIZONTAL, false);
@@ -164,5 +167,37 @@ public class HomeActivity extends AppCompatActivity {
                 startActivity(intent);
             }
         });
+
+        cartBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                finish();
+                Intent intent = new Intent(HomeActivity.this, CartActivity.class);
+                startActivity(intent);
+            }
+        });
+    }
+
+    @Override
+    public void onItemClick(int id) {
+        apiService.getProducts(id).enqueue(
+                new Callback<List<Product>>() {
+                    @Override
+                    public void onResponse(Call<List<Product>> call, Response<List<Product>> response) {
+                        if (response.isSuccessful()){
+                            productList = response.body();
+                            productAdapter.setData(productList);
+                            productAdapter.notifyDataSetChanged();
+                        } else {
+
+                        }
+                    }
+
+                    @Override
+                    public void onFailure(Call<List<Product>> call, Throwable t) {
+
+                    }
+                }
+        );
     }
 }

@@ -2,6 +2,7 @@ package com.example.techapp.activity;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.AppCompatButton;
+import androidx.room.Room;
 
 import android.os.Bundle;
 import android.util.Log;
@@ -13,10 +14,13 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
+import com.example.techapp.AsyncTack.InsertOrderAsyncTack;
 import com.example.techapp.Constant;
 import com.example.techapp.R;
 import com.example.techapp.api.APIBuilder;
 import com.example.techapp.api.APIService;
+import com.example.techapp.database.MyDatabase;
+import com.example.techapp.database.Order;
 import com.example.techapp.model.Product;
 
 import retrofit2.Call;
@@ -40,6 +44,7 @@ public class DetailActivity extends AppCompatActivity {
         setContentView(R.layout.activity_detail);
         anhXa();
         getDetail();
+        event();
     }
     void anhXa(){
         tvProductName = findViewById(R.id.tvProductName);
@@ -72,6 +77,7 @@ public class DetailActivity extends AppCompatActivity {
 
                                 npAmount.setMinValue(1);
                                 npAmount.setMaxValue(product.getSoLuong());
+                                npAmount.setValue(1);
 
                                 Glide.with(getApplicationContext())
                                         .load(product.getImage())
@@ -115,6 +121,21 @@ public class DetailActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 Toast.makeText(DetailActivity.this, "mua hàng", Toast.LENGTH_SHORT).show();
+                MyDatabase myDatabase = Room.databaseBuilder(
+                        getApplicationContext(),
+                        MyDatabase.class,
+                        Constant.database_name
+                ).build();
+                Order.OrderDAO dao = myDatabase.orderDAO();
+                Order order = new Order(
+                  product.getId(),
+                  product.getImage(),
+                  product.getName(),
+                  npAmount.getValue(),
+                        (npAmount.getValue() * Integer.parseInt(product.getGia()))
+                );
+
+                new InsertOrderAsyncTack(dao).execute(order);
             }
         });
     }

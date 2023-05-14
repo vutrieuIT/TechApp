@@ -4,6 +4,7 @@ import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -21,6 +22,16 @@ public class CategoryAdapter extends RecyclerView.Adapter<CategoryAdapter.Holder
     Context context;
     List<Category> list;
 
+    private OnItemClickListener mListener;
+
+    public interface OnItemClickListener {
+        void onItemClick(int id);
+    }
+
+    public void setOnItemClickListener(OnItemClickListener listener) {
+        mListener = listener;
+    }
+
     public CategoryAdapter(Context context, List<Category> list) {
         this.context = context;
         this.list = list;
@@ -31,12 +42,13 @@ public class CategoryAdapter extends RecyclerView.Adapter<CategoryAdapter.Holder
     }
 
 
+
     @NonNull
     @Override
     public Holder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(parent.getContext())
                 .inflate(R.layout.item_category, null);
-        Holder holder = new Holder(view);
+        Holder holder = new Holder(view, mListener);
         return holder;
     }
 
@@ -48,6 +60,7 @@ public class CategoryAdapter extends RecyclerView.Adapter<CategoryAdapter.Holder
         Glide.with(context)
                 .load(category.getImage())
                 .into(holder.image);
+
     }
 
     @Override
@@ -59,7 +72,7 @@ public class CategoryAdapter extends RecyclerView.Adapter<CategoryAdapter.Holder
         public TextView name;
         public ImageView image;
 
-        public Holder(@NonNull View itemView) {
+        public Holder(@NonNull View itemView,final OnItemClickListener listener) {
             super(itemView);
             name = (TextView) itemView.findViewById(R.id.categoryName);
             image = itemView.findViewById(R.id.categoryImage);
@@ -67,7 +80,11 @@ public class CategoryAdapter extends RecyclerView.Adapter<CategoryAdapter.Holder
             itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    Toast.makeText(context, "click category" + name.getText().toString(), Toast.LENGTH_SHORT).show();
+                    if (listener != null){
+                        int pos =  getAdapterPosition();
+                        int id = list.get(pos).getId();
+                        listener.onItemClick(id);
+                    }
                 }
             });
         }
