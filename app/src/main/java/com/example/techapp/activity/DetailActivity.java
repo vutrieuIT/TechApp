@@ -1,7 +1,6 @@
 package com.example.techapp.activity;
 
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.widget.AppCompatButton;
 import androidx.room.Room;
 
 import android.content.Intent;

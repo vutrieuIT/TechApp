@@ -4,7 +4,6 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.room.Room;
-import androidx.room.RoomDatabase;
 
 import android.app.AlertDialog;
 import android.content.DialogInterface;

@@ -1,13 +1,7 @@
 package com.example.techapp.activity;
 
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.content.ContextCompat;
-import androidx.recyclerview.widget.DividerItemDecoration;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
-
 import android.content.Intent;
-import android.content.SharedPreferences;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -17,6 +11,12 @@ import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
+
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.content.ContextCompat;
+import androidx.recyclerview.widget.DividerItemDecoration;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
 import com.example.techapp.Constant;
@@ -31,6 +31,7 @@ import com.example.techapp.model.ResponseModel;
 import com.example.techapp.model.User;
 import com.example.techapp.storage.SharedPrefManager;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -40,7 +41,7 @@ import retrofit2.Response;
 
 public class HomeActivity extends AppCompatActivity implements CategoryAdapter.OnItemClickListener{
 
-    RecyclerView recyclerViewCategory, recyclerViewPopular;
+    RecyclerView recyclerViewCategory, recyclerViewProduct;
     //
     CategoryAdapter categoryAdapter;
 
@@ -53,6 +54,8 @@ public class HomeActivity extends AppCompatActivity implements CategoryAdapter.O
     TextView name;
     ImageView avatar;
     EditText editTextSearch;
+
+    int pageNumber = 0, pageSize = 2;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -62,7 +65,7 @@ public class HomeActivity extends AppCompatActivity implements CategoryAdapter.O
         welcome();
         configRecycleView();
         getCategory();
-        getProduct();
+        loadProduct();
         event();
 
         // event
@@ -71,7 +74,7 @@ public class HomeActivity extends AppCompatActivity implements CategoryAdapter.O
 
     void anhXa(){
         recyclerViewCategory = findViewById(R.id.recyclerViewCategory);
-        recyclerViewPopular = findViewById(R.id.recyclerViewPopular);
+        recyclerViewProduct = findViewById(R.id.recyclerViewProduct);
         name = findViewById(R.id.username);
         avatar = findViewById(R.id.imageViewAvatar);
         cartBtn = findViewById(R.id.cartBtn);
@@ -101,11 +104,11 @@ public class HomeActivity extends AppCompatActivity implements CategoryAdapter.O
 
         // RV Product
         productAdapter = new ProductAdapter(this, productList);
-        recyclerViewPopular.setHasFixedSize(true);
+        recyclerViewProduct.setHasFixedSize(true);
         RecyclerView.LayoutManager layoutManager1 = new LinearLayoutManager(getApplicationContext(),
                 RecyclerView.VERTICAL, false);
-        recyclerViewPopular.setLayoutManager(layoutManager1);
-        recyclerViewPopular.setAdapter(productAdapter);
+        recyclerViewProduct.setLayoutManager(layoutManager1);
+        recyclerViewProduct.setAdapter(productAdapter);
     }
 
     void welcome(){
@@ -141,15 +144,33 @@ public class HomeActivity extends AppCompatActivity implements CategoryAdapter.O
         );
     }
 
-    void getProduct(){
-        apiService.getProduct().enqueue(
-                new Callback<List<Product>>() {
+    void loadProduct(){
+        productList.clear();
+        productAdapter.notifyDataSetChanged();
+
+        getProduct(pageNumber);
+    }
+
+    void getProduct(final int pageNumber){
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                apiService.getProductsPaging(pageNumber,pageSize).enqueue(new Callback<List<Product>>() {
                     @Override
                     public void onResponse(Call<List<Product>> call, Response<List<Product>> response) {
-                        if (response.isSuccessful()){
-                            productList = response.body();
-                            productAdapter.setData(productList);
-                            productAdapter.notifyDataSetChanged();
+                        if(response.isSuccessful()){
+                            List<Product> list = response.body();
+                            if (list != null &&!list.isEmpty()){
+                                productList.addAll(list);
+                                runOnUiThread(new Runnable() {
+                                    @Override
+                                    public void run() {
+                                        productAdapter.setData(productList);
+                                        productAdapter.notifyDataSetChanged();
+                                    }
+                                });
+                                getProduct(pageNumber+1);
+                            }
                         } else {
                             Log.e("home product api", "response fail");
                         }
@@ -159,9 +180,11 @@ public class HomeActivity extends AppCompatActivity implements CategoryAdapter.O
                     public void onFailure(Call<List<Product>> call, Throwable t) {
                         Log.e("home product api", t.getMessage());
                     }
-                }
-        );
+                });
+            }
+        }).start();
     }
+
 
     void event(){
         avatar.setOnClickListener(new View.OnClickListener() {
@@ -215,7 +238,6 @@ public class HomeActivity extends AppCompatActivity implements CategoryAdapter.O
 
                         }
                     }
-
                     @Override
                     public void onFailure(Call<List<Product>> call, Throwable t) {
 

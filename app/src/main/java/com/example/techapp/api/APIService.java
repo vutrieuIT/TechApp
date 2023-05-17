@@ -54,6 +54,10 @@ public interface APIService {
     @GET("/product")
     Call<List<Product>> getProducts(@Query("category_id") int categoryId);
 
+    @GET("/product")
+    Call<List<Product>> getProductsPaging(@Query("pageNumber") int pageNumber,
+            @Query("pageSize") int pageSize);
+
     @Multipart
     @POST("/user/avatar")
     Call<User> uploadAvatar(@Part("id") int id,
