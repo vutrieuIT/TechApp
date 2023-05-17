@@ -28,7 +28,7 @@
         android:id="@+id/tvTotalMoney"
         android:layout_width="match_parent"
         android:layout_height="50dp"
-        android:text="vnd"
+        android:text="0 vnd"
         android:textSize="24dp"
         android:textStyle="bold"
         android:gravity="center"

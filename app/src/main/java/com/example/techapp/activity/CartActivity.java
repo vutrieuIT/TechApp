@@ -10,20 +10,31 @@ import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.example.techapp.AsyncTack.DeleteAllOrderAsync;
 import com.example.techapp.AsyncTack.GetAllOrderAsync;
 import com.example.techapp.Constant;
 import com.example.techapp.R;
 import com.example.techapp.adapter.OrderAdapter;
+import com.example.techapp.api.APIBuilder;
+import com.example.techapp.api.APIService;
 import com.example.techapp.database.MyDatabase;
 import com.example.techapp.database.Order;
+import com.example.techapp.model.OrderRequest;
+import com.example.techapp.storage.SharedPrefManager;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
+
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 public class CartActivity extends AppCompatActivity {
 
@@ -36,6 +47,8 @@ public class CartActivity extends AppCompatActivity {
     Button btnBack, btnPay;
 
     TextView tvTotalMoney;
+
+    APIService apiService;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -45,12 +58,13 @@ public class CartActivity extends AppCompatActivity {
 
         try {
             getData();
+            totalMoney();
         } catch (ExecutionException e) {
             throw new RuntimeException(e);
         } catch (InterruptedException e) {
             throw new RuntimeException(e);
         }
-
+        pay();
         back();
     }
 
@@ -59,6 +73,8 @@ public class CartActivity extends AppCompatActivity {
         btnBack = findViewById(R.id.btnBack);
         btnPay = findViewById(R.id.btnPay);
         tvTotalMoney = findViewById(R.id.tvTotalMoney);
+
+        apiService = APIBuilder.createAPI(APIService.class, Constant.url);
     }
     void configAdapter(){
         orderAdapter = new OrderAdapter(CartActivity.this, orders);
@@ -82,6 +98,17 @@ public class CartActivity extends AppCompatActivity {
         orders = new GetAllOrderAsync(dao).execute().get();
         orderAdapter.setData(orders);
         orderAdapter.notifyDataSetChanged();
+        totalMoney();
+    }
+    void deleteData(){
+        MyDatabase myDatabase = Room.databaseBuilder(
+                getApplicationContext(),
+                MyDatabase.class,
+                Constant.database_name
+        ).build();
+        Order.OrderDAO dao = myDatabase.orderDAO();
+        new DeleteAllOrderAsync(dao).execute();
+        totalMoney();
     }
 
     void back(){
@@ -94,6 +121,17 @@ public class CartActivity extends AppCompatActivity {
             }
         });
     }
+    void totalMoney(){
+        if(orders == null || orders.isEmpty()){
+            tvTotalMoney.setText("0 vnd");
+        } else {
+            Long sum = 0L;
+            for(Order o : orders){
+                sum += o.getTotalPrice();
+            }
+            tvTotalMoney.setText(sum + " vnd");
+        }
+    }
 
     void pay(){
         btnPay.setOnClickListener(new View.OnClickListener() {
@@ -105,8 +143,40 @@ public class CartActivity extends AppCompatActivity {
                 builder.setPositiveButton("Đồng ý", new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int which) {
                         dialog.dismiss();
-                        Toast.makeText(CartActivity.this, "gửi dơn hàng lên server, xóa orders", Toast.LENGTH_SHORT).show();
+                        deleteData();
                         // todo: gửi đơn hàng lên server
+                        List<com.example.techapp.model.Order> orderList = new ArrayList<>();
+                        for(Order order : orders){
+                            com.example.techapp.model.Order o = new com.example.techapp.model.Order();
+                            o.setProductId(order.getProduct_id());
+                            o.setQuantity(order.getAmount());
+                            o.setTotalMoney(order.getTotalPrice());
+                            orderList.add(o);
+                        }
+
+                        OrderRequest orderRequest = new OrderRequest();
+                        orderRequest.setUserId(SharedPrefManager.getInstance(getApplicationContext()).getUser().getId());
+                        orderRequest.setOrders(orderList);
+
+                        apiService.userOrder(orderRequest).enqueue(new Callback<Void>() {
+                            @Override
+                            public void onResponse(Call<Void> call, Response<Void> response) {
+                                if(response.isSuccessful()){
+                                    Toast.makeText(CartActivity.this, "Đã đặt hàng", Toast.LENGTH_SHORT).show();
+                                } else {
+                                    Integer code = response.code();
+                                    Log.e("cart api", code.toString());
+                                }
+                            }
+
+                            @Override
+                            public void onFailure(Call<Void> call, Throwable t) {
+                                Log.e("cart api", t.getMessage());
+                            }
+                        });
+                        orders.clear();
+                        orderAdapter.notifyDataSetChanged();
+                        totalMoney();
                     }
                 });
 

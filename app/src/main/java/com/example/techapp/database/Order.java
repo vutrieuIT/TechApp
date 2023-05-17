@@ -90,5 +90,8 @@ public class Order {
 
         @Query("delete from `Order` where id = :id")
         void deleteOrderById(int id);
+
+        @Query("delete from `Order`")
+        void deleteAllOrders();
     }
 }

@@ -15,23 +15,41 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.bumptech.glide.Glide;
 import com.example.techapp.R;
 import com.example.techapp.activity.DetailActivity;
+import com.example.techapp.database.Order;
 import com.example.techapp.model.Product;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.Holder>{
     Context context;
     List<Product> list;
+    List<Product> searchList;
 
     public ProductAdapter(Context context, List<Product> list) {
         this.context = context;
         this.list = list;
+        this.searchList = new ArrayList<>(list);
     }
 
     public void setData(List<Product> list) {
         this.list = list;
+        this.searchList =new ArrayList<>(list);
     }
 
+    public void search(String keyword){
+        searchList.clear();
+        if (keyword.isEmpty()){
+            searchList.addAll(list);
+        } else {
+            for(Product product: list){
+                if (product.getName().toLowerCase().contains(keyword.toLowerCase())){
+                    searchList.add(product);
+                }
+            }
+        }
+        notifyDataSetChanged();
+    }
     @NonNull
     @Override
     public Holder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
@@ -43,7 +61,7 @@ public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.Holder>{
 
     @Override
     public void onBindViewHolder(@NonNull Holder holder, int position) {
-        Product product = list.get(position);
+        Product product = searchList.get(position);
 
         holder.productName.setText(product.getName());
 
@@ -63,7 +81,7 @@ public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.Holder>{
 
     @Override
     public int getItemCount() {
-        return list != null ? list.size() : 0;
+        return searchList != null ? searchList.size() : 0;
     }
 
     public class Holder extends RecyclerView.ViewHolder{

@@ -1,6 +1,7 @@
 package com.example.techapp.api;
 
 import com.example.techapp.model.Category;
+import com.example.techapp.model.OrderRequest;
 import com.example.techapp.model.Product;
 import com.example.techapp.model.ResponseModel;
 import com.example.techapp.model.User;
@@ -9,6 +10,7 @@ import java.util.List;
 
 import okhttp3.MultipartBody;
 import retrofit2.Call;
+import retrofit2.http.Body;
 import retrofit2.http.Field;
 import retrofit2.http.FormUrlEncoded;
 import retrofit2.http.GET;
@@ -57,4 +59,6 @@ public interface APIService {
     Call<User> uploadAvatar(@Part("id") int id,
                             @Part MultipartBody.Part avatar);
 
+    @POST("/user/order")
+    Call<Void> userOrder(@Body OrderRequest orderRequest);
 }

@@ -9,8 +9,11 @@ import androidx.recyclerview.widget.RecyclerView;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.util.Log;
 import android.view.View;
+import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -49,6 +52,7 @@ public class HomeActivity extends AppCompatActivity implements CategoryAdapter.O
 
     TextView name;
     ImageView avatar;
+    EditText editTextSearch;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -71,6 +75,7 @@ public class HomeActivity extends AppCompatActivity implements CategoryAdapter.O
         name = findViewById(R.id.username);
         avatar = findViewById(R.id.imageViewAvatar);
         cartBtn = findViewById(R.id.cartBtn);
+        editTextSearch = findViewById(R.id.editTextSearch);
 
         // api
         apiService = APIBuilder.createAPI(APIService.class, Constant.url);
@@ -174,6 +179,24 @@ public class HomeActivity extends AppCompatActivity implements CategoryAdapter.O
                 finish();
                 Intent intent = new Intent(HomeActivity.this, CartActivity.class);
                 startActivity(intent);
+            }
+        });
+
+        editTextSearch.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                String keyword = s.toString().trim();
+                productAdapter.search(keyword);
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+
             }
         });
     }
