@@ -18,28 +18,29 @@ import com.example.techapp.Constant;
 import com.example.techapp.R;
 import com.example.techapp.database.MyDatabase;
 import com.example.techapp.database.Order;
+import com.example.techapp.model.Order1;
 
 import java.util.List;
 
-public class OrderAdapter extends RecyclerView.Adapter<OrderAdapter.Holder> {
+public class OrderAdapter1 extends RecyclerView.Adapter<OrderAdapter1.Holder> {
     Context context;
-    List<Order> list;
+    List<Order1> list;
     private OnItemDeleteListener deleteListener;
 
     public interface OnItemDeleteListener {
-        void onItemDeleted();
+        void onItemDeleted(Long orderId);
     }
 
     public void setOnItemDeleteListener(OnItemDeleteListener listener) {
         this.deleteListener = listener;
     }
 
-    public OrderAdapter(Context context, List<Order> list) {
+    public OrderAdapter1(Context context, List<Order1> list) {
         this.context = context;
         this.list = list;
     }
 
-    public void setData(List<Order> list) {
+    public void setData(List<Order1> list) {
         this.list = list;
     }
 
@@ -54,26 +55,22 @@ public class OrderAdapter extends RecyclerView.Adapter<OrderAdapter.Holder> {
 
     @Override
     public void onBindViewHolder(@NonNull Holder holder, int position) {
-        Order order = list.get(position);
-        holder.productName.setText(order.getName());
-        holder.amount.setText(String.valueOf(order.getAmount()));
-        holder.totalPrice.setText(String.valueOf(order.getTotalPrice()));
+        Order1 order = list.get(position);
+        holder.productName.setText(order.getProductName());
+        holder.amount.setText(String.valueOf(order.getQuantity()));
+        holder.totalPrice.setText(String.valueOf(order.getTotalMoney()));
 
         Glide.with(context)
                 .load(order.getImage())
                 .into(holder.imgProduct);
 
-        MyDatabase myDatabase = Room.databaseBuilder(context, MyDatabase.class, Constant.database_name).build();
-        Order.OrderDAO dao = myDatabase.orderDAO();
-
         holder.btnDelete.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                new DeleteOrderAsync(dao).execute(order.getId());
                 list.remove(holder.getAdapterPosition());
                 notifyDataSetChanged();
                 if (deleteListener != null){
-                    deleteListener.onItemDeleted();
+                    deleteListener.onItemDeleted(order.getOrderId());
                 }
             }
         });

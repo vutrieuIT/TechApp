@@ -4,15 +4,25 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.widget.Button;
 
 import com.example.techapp.R;
 
 public class IntroActivity extends AppCompatActivity {
 
+    Button introButton;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_intro);
+
+        introButton = findViewById(R.id.introButton);
+
+        introButton.setOnClickListener(view -> {
+            finish();
+            Intent intent = new Intent(getApplicationContext(), LoginActivity.class);
+            startActivity(intent);
+        });
 
         Thread thread = new Thread(new Runnable() {
             @Override
@@ -20,7 +30,7 @@ public class IntroActivity extends AppCompatActivity {
                 int n = 0;
                 try {
                     do {
-                        if (n>=2000){
+                        if (n>=3000){
                             finish();
                             Intent intent = new Intent(
                                     getApplicationContext(),

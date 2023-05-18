@@ -43,7 +43,7 @@ public class CartActivity extends AppCompatActivity implements OrderAdapter.OnIt
 
     List<Order> orders;
 
-    Button btnBack, btnPay;
+    Button btnBack, btnPay, btnOrder;
 
     TextView tvTotalMoney;
 
@@ -66,12 +66,14 @@ public class CartActivity extends AppCompatActivity implements OrderAdapter.OnIt
         }
         pay();
         back();
+        switchOrder();
     }
 
     void anhXa() {
         cartRVProduct = findViewById(R.id.cartRVProduct);
         btnBack = findViewById(R.id.btnBack);
         btnPay = findViewById(R.id.btnPay);
+        btnOrder = findViewById(R.id.btnOrder);
         tvTotalMoney = findViewById(R.id.tvTotalMoney);
 
         apiService = APIBuilder.createAPI(APIService.class, Constant.url);
@@ -197,6 +199,17 @@ public class CartActivity extends AppCompatActivity implements OrderAdapter.OnIt
 
                 AlertDialog dialog = builder.create();
                 dialog.show();
+            }
+        });
+    }
+
+    void switchOrder(){
+        btnOrder.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                finish();
+                Intent intent = new Intent(CartActivity.this, OrderActivity.class);
+                startActivity(intent);
             }
         });
     }

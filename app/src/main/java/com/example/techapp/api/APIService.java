@@ -1,6 +1,7 @@
 package com.example.techapp.api;
 
 import com.example.techapp.model.Category;
+import com.example.techapp.model.Order1;
 import com.example.techapp.model.OrderRequest;
 import com.example.techapp.model.Product;
 import com.example.techapp.model.ResponseModel;
@@ -11,6 +12,7 @@ import java.util.List;
 import okhttp3.MultipartBody;
 import retrofit2.Call;
 import retrofit2.http.Body;
+import retrofit2.http.DELETE;
 import retrofit2.http.Field;
 import retrofit2.http.FormUrlEncoded;
 import retrofit2.http.GET;
@@ -56,7 +58,7 @@ public interface APIService {
 
     @GET("/product")
     Call<List<Product>> getProductsPaging(@Query("pageNumber") int pageNumber,
-            @Query("pageSize") int pageSize);
+                                          @Query("pageSize") int pageSize);
 
     @Multipart
     @POST("/user/avatar")
@@ -65,4 +67,10 @@ public interface APIService {
 
     @POST("/user/order")
     Call<Void> userOrder(@Body OrderRequest orderRequest);
+
+    @GET("user/{id}/order")
+    Call<List<Order1>> getUserOrders(@Path("id") int userId);
+
+    @POST("/user/order/delete")
+    Call<Void> deleteOrders(@Body List<Long> ids);
 }
