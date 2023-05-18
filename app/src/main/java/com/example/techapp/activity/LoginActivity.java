@@ -9,6 +9,7 @@ import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -30,6 +31,8 @@ public class LoginActivity extends AppCompatActivity {
     TextView switchRegister;
     TextInputEditText etUsername, etPassword;
     Button btnLogin;
+    ProgressBar progressBar;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -62,6 +65,7 @@ public class LoginActivity extends AppCompatActivity {
         btnLogin = findViewById(R.id.btnLogin);
         etUsername = findViewById(R.id.loginUsername);
         etPassword = findViewById(R.id.loginPassword);
+        progressBar = findViewById(R.id.progressBar);
     }
     private void login(){
         final String username = etUsername.getText().toString();
@@ -78,6 +82,8 @@ public class LoginActivity extends AppCompatActivity {
             etPassword.requestFocus();
             return;
         }
+        progressBar.setVisibility(View.VISIBLE); // Hiển thị ProgressBar
+        btnLogin.setEnabled(false); // Vô hiệu hóa nút Đăng Nhập
         APIService apiService = APIBuilder.createAPI(APIService.class, Constant.url);
         apiService.login(username, password).enqueue(
                 new Callback<ResponseModel<User>>() {
@@ -97,11 +103,15 @@ public class LoginActivity extends AppCompatActivity {
                             Toast.makeText(LoginActivity.this, res.getString(R.string.internet_error), Toast.LENGTH_LONG).show();
                             Log.e("Login API", response.errorBody().toString());
                         }
+                        progressBar.setVisibility(View.GONE); // Ẩn ProgressBar
+                        btnLogin.setEnabled(true); // Kích hoạt lại nút Đăng Nhập
                     }
 
                     @Override
                     public void onFailure(Call<ResponseModel<User>> call, Throwable t) {
                         Log.e("Login API", t.getMessage());
+                        progressBar.setVisibility(View.GONE); // Ẩn ProgressBar
+                        btnLogin.setEnabled(true); // Kích hoạt lại nút Đăng Nhập
                     }
                 }
         );

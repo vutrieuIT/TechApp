@@ -35,7 +35,7 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-public class CartActivity extends AppCompatActivity {
+public class CartActivity extends AppCompatActivity implements OrderAdapter.OnItemDeleteListener{
 
     RecyclerView cartRVProduct;
 
@@ -48,6 +48,7 @@ public class CartActivity extends AppCompatActivity {
     TextView tvTotalMoney;
 
     APIService apiService;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -67,7 +68,7 @@ public class CartActivity extends AppCompatActivity {
         back();
     }
 
-    void anhXa(){
+    void anhXa() {
         cartRVProduct = findViewById(R.id.cartRVProduct);
         btnBack = findViewById(R.id.btnBack);
         btnPay = findViewById(R.id.btnPay);
@@ -75,8 +76,10 @@ public class CartActivity extends AppCompatActivity {
 
         apiService = APIBuilder.createAPI(APIService.class, Constant.url);
     }
-    void configAdapter(){
+
+    void configAdapter() {
         orderAdapter = new OrderAdapter(CartActivity.this, orders);
+        orderAdapter.setOnItemDeleteListener(this);
         cartRVProduct.setAdapter(orderAdapter);
 
         RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(getApplicationContext(),
@@ -99,7 +102,8 @@ public class CartActivity extends AppCompatActivity {
         orderAdapter.notifyDataSetChanged();
         totalMoney();
     }
-    void deleteData(){
+
+    void deleteData() {
         MyDatabase myDatabase = Room.databaseBuilder(
                 getApplicationContext(),
                 MyDatabase.class,
@@ -110,7 +114,7 @@ public class CartActivity extends AppCompatActivity {
         totalMoney();
     }
 
-    void back(){
+    void back() {
         btnBack.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -120,75 +124,85 @@ public class CartActivity extends AppCompatActivity {
             }
         });
     }
-    void totalMoney(){
-        if(orders == null || orders.isEmpty()){
+
+    void totalMoney() {
+        if (orders == null || orders.isEmpty()) {
             tvTotalMoney.setText("0 vnd");
         } else {
             Long sum = 0L;
-            for(Order o : orders){
+            for (Order o : orders) {
                 sum += o.getTotalPrice();
             }
             tvTotalMoney.setText(sum + " vnd");
         }
     }
 
-    void pay(){
+    void pay() {
         btnPay.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 AlertDialog.Builder builder = new AlertDialog.Builder(CartActivity.this);
                 builder.setTitle("Thông báo");
-                builder.setMessage("bạn có muốn đặt hàng không \n giá trị đơn hàng là: "+ tvTotalMoney.getText().toString());
-                builder.setPositiveButton("Đồng ý", new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialog, int which) {
-                        dialog.dismiss();
-                        deleteData();
-                        // todo: gửi đơn hàng lên server
-                        List<com.example.techapp.model.Order> orderList = new ArrayList<>();
-                        for(Order order : orders){
-                            com.example.techapp.model.Order o = new com.example.techapp.model.Order();
-                            o.setProductId(order.getProduct_id());
-                            o.setQuantity(order.getAmount());
-                            o.setTotalMoney(order.getTotalPrice());
-                            orderList.add(o);
-                        }
+                if (orders == null || orders.isEmpty()) {
+                    builder.setMessage("không có sản phẩm để đặt hàng");
+                } else {
+                    builder.setMessage("bạn có muốn đặt hàng không \n giá trị đơn hàng là: " + tvTotalMoney.getText().toString());
+                    builder.setPositiveButton("Đồng ý", new DialogInterface.OnClickListener() {
+                        public void onClick(DialogInterface dialog, int which) {
+                            dialog.dismiss();
+                            deleteData();
+                            // todo: gửi đơn hàng lên server
+                            List<com.example.techapp.model.Order> orderList = new ArrayList<>();
+                            for (Order order : orders) {
+                                com.example.techapp.model.Order o = new com.example.techapp.model.Order();
+                                o.setProductId(order.getProduct_id());
+                                o.setQuantity(order.getAmount());
+                                o.setTotalMoney(order.getTotalPrice());
+                                orderList.add(o);
+                            }
 
-                        OrderRequest orderRequest = new OrderRequest();
-                        orderRequest.setUserId(SharedPrefManager.getInstance(getApplicationContext()).getUser().getId());
-                        orderRequest.setOrders(orderList);
+                            OrderRequest orderRequest = new OrderRequest();
+                            orderRequest.setUserId(SharedPrefManager.getInstance(getApplicationContext()).getUser().getId());
+                            orderRequest.setOrders(orderList);
 
-                        apiService.userOrder(orderRequest).enqueue(new Callback<Void>() {
-                            @Override
-                            public void onResponse(Call<Void> call, Response<Void> response) {
-                                if(response.isSuccessful()){
-                                    Toast.makeText(CartActivity.this, "Đã đặt hàng", Toast.LENGTH_SHORT).show();
-                                } else {
-                                    Integer code = response.code();
-                                    Log.e("cart api", code.toString());
+                            apiService.userOrder(orderRequest).enqueue(new Callback<Void>() {
+                                @Override
+                                public void onResponse(Call<Void> call, Response<Void> response) {
+                                    if (response.isSuccessful()) {
+                                        Toast.makeText(CartActivity.this, "Đã đặt hàng", Toast.LENGTH_SHORT).show();
+                                    } else {
+                                        Integer code = response.code();
+                                        Log.e("cart api", code.toString());
+                                    }
                                 }
-                            }
 
-                            @Override
-                            public void onFailure(Call<Void> call, Throwable t) {
-                                Log.e("cart api", t.getMessage());
-                            }
-                        });
-                        orders.clear();
-                        orderAdapter.notifyDataSetChanged();
-                        totalMoney();
-                    }
-                });
+                                @Override
+                                public void onFailure(Call<Void> call, Throwable t) {
+                                    Log.e("cart api", t.getMessage());
+                                }
+                            });
+                            orders.clear();
+                            orderAdapter.notifyDataSetChanged();
+                            totalMoney();
+                        }
+                    });
 
-                builder.setNegativeButton("Hủy", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        dialog.dismiss();
-                    }
-                });
+                    builder.setNegativeButton("Hủy", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            dialog.dismiss();
+                        }
+                    });
+                }
 
                 AlertDialog dialog = builder.create();
                 dialog.show();
             }
         });
+    }
+
+    @Override
+    public void onItemDeleted() {
+        totalMoney();
     }
 }

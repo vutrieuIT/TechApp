@@ -123,7 +123,7 @@ public class DetailActivity extends AppCompatActivity {
         btnAdd.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Toast.makeText(DetailActivity.this, "mua hàng", Toast.LENGTH_SHORT).show();
+                Toast.makeText(DetailActivity.this, "Đã thêm vào giỏ hàng", Toast.LENGTH_SHORT).show();
                 MyDatabase myDatabase = Room.databaseBuilder(
                         getApplicationContext(),
                         MyDatabase.class,

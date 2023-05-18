@@ -21,16 +21,26 @@ import com.example.techapp.database.Order;
 
 import java.util.List;
 
-public class OrderAdapter extends RecyclerView.Adapter<OrderAdapter.Holder>{
-     Context context;
-     List<Order> list;
+public class OrderAdapter extends RecyclerView.Adapter<OrderAdapter.Holder> {
+    Context context;
+    List<Order> list;
+
+    private OnItemDeleteListener deleteListener;
+
+    public interface OnItemDeleteListener {
+        void onItemDeleted();
+    }
+
+    public void setOnItemDeleteListener(OnItemDeleteListener listener) {
+        this.deleteListener = listener;
+    }
 
     public OrderAdapter(Context context, List<Order> list) {
         this.context = context;
         this.list = list;
     }
 
-    public void setData(List<Order> list){
+    public void setData(List<Order> list) {
         this.list = list;
     }
 
@@ -63,6 +73,9 @@ public class OrderAdapter extends RecyclerView.Adapter<OrderAdapter.Holder>{
                 new DeleteOrderAsync(dao).execute(order.getId());
                 list.remove(holder.getAdapterPosition());
                 notifyDataSetChanged();
+                if (deleteListener != null){
+                    deleteListener.onItemDeleted();
+                }
             }
         });
 
