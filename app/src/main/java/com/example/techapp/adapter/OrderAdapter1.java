@@ -63,7 +63,6 @@ public class OrderAdapter1 extends RecyclerView.Adapter<OrderAdapter1.Holder> {
         Glide.with(context)
                 .load(order.getImage())
                 .into(holder.imgProduct);
-
         holder.btnDelete.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -74,8 +73,6 @@ public class OrderAdapter1 extends RecyclerView.Adapter<OrderAdapter1.Holder> {
                 }
             }
         });
-
-
     }
 
     @Override

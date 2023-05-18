@@ -17,6 +17,8 @@ import com.example.techapp.adapter.OrderAdapter1;
 import com.example.techapp.api.APIBuilder;
 import com.example.techapp.api.APIService;
 import com.example.techapp.model.Order1;
+import com.example.techapp.model.User;
+import com.example.techapp.storage.SharedPrefManager;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -67,7 +69,8 @@ public class OrderActivity extends AppCompatActivity implements OrderAdapter1.On
     }
 
     void getData(){
-        apiService.getUserOrders(3).enqueue(new Callback<List<Order1>>() {
+        User user = SharedPrefManager.getInstance(getApplicationContext()).getUser();
+        apiService.getUserOrders(user.getId()).enqueue(new Callback<List<Order1>>() {
             @Override
             public void onResponse(Call<List<Order1>> call, Response<List<Order1>> response) {
                 if (response.isSuccessful()){
@@ -134,7 +137,24 @@ public class OrderActivity extends AppCompatActivity implements OrderAdapter1.On
                 new Thread(new Runnable() {
                     @Override
                     public void run() {
+                        apiService.deleteOrders(ids).enqueue(new Callback<Void>() {
+                            @Override
+                            public void onResponse(Call<Void> call, Response<Void> response) {
+                                if(response.isSuccessful()){
+                                    Toast.makeText(OrderActivity.this, "đã xóa toàn bộ đơn hàng", Toast.LENGTH_SHORT).show();
+                                    list.clear();
+                                    orderAdapter1.notifyDataSetChanged();
+                                }
+                                else {
+                                    Log.e("order api", "xoa list order loi" + response.code());
+                                }
+                            }
 
+                            @Override
+                            public void onFailure(Call<Void> call, Throwable t) {
+                                Log.e("order api", "call api fail " + t.getMessage());
+                            }
+                        });
                     }
                 }).start();
             }
