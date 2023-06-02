@@ -7,7 +7,7 @@ Repo này là một dự án Android(Java) bán các sản phẩm điện tử, 
 4. thêm vào giỏ hàng, đặt hàng
 # Cài Đặt
 1. Tải và cài đặt Android Studio từ trang chủ: [Android Studio](https://developer.android.com/studio).
-2.Sao chép repository về máy tính của bạn bằng cách sử dụng Git hoặc tải repository dưới dạng file ZIP và giải nén.
+2. Sao chép repository về máy tính của bạn bằng cách sử dụng Git hoặc tải repository dưới dạng file ZIP và giải nén. 
 - Sử dụng Git:
   ```
   git clone https://github.com/vutrieuIT/TechApp
